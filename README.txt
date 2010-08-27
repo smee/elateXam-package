@@ -9,8 +9,16 @@ It was developed at the University of Leipzig.
 This server gets configured by the settings in sslsettings.properties. Per default the server runs an unencrypted
 http connector at port 8080. For securing the server please create a java keystore that contains a valid certificate 
 (including a RSA keypair) as well as at least one public key (for client authentication).
-Use the provided scripts for generating self-signed certificates for test setups. Please change the password setting
+Please use the provided scripts (createCertificates.(sh|bat)) for generating self-signed certificates for test setups. Please change the password setting
 accordingly.
 
-The elateXam server can be accessed with any browser at http://localhost:8080/examServer or https://localhost:8443/examServer
+Running:
+=========
+
+There are two modes: Local test run with an unsecured http connector OR completely secure SSL communication with 
+client certificates.
+
+Start the server using one of the 'runElateXam.(sh|bat)' scripts.
+
+The elateXam server can be accessed with any browser at http://localhost:8080/examServer (only from localhost!) or https://localhost:8443/examServer
  

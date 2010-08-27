@@ -1,4 +1,8 @@
 #!/bin/bash
+# author Steffen Dienst (sdienst@informatik.uni-leipzig.de)
+#
+# Gnu Public License v2, see license text at http://www.gnu.org/licenses/gpl.html
+#
 # Create a new jks keystore with a self signed certificate as well as a PKCS12 keypair. Both
 # files can be used for implementing SSL in tomcat 5.5 including client authentication.
 if [ -r "$JAVA_HOME"/bin/keytool ]; then 

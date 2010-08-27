@@ -123,7 +123,7 @@ public class Startup {
                     "for Linux: createCertificates.sh \n" +
                     "for Windows: createCertificates.bat \n\n" +
                     "and place it in this directory with name \"server.keystore\". \n\n" +
-                    "WARNING: SSL will not be available!" +
+                    "WARNING: SSL will not be available! \n" +
                     "#######################################################################");
         }
 
