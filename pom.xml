@@ -68,7 +68,7 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>de.elatexam</groupId>
-                  <artifactId>examserver</artifactId>
+                  <artifactId>examServer</artifactId>
                   <version>1.0.0-SNAPSHOT</version>
                   <type>war</type>
                   <overWrite>false</overWrite>
