@@ -18,9 +18,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 package de.elatexam.embedded;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import javax.management.MBeanServer;
 
@@ -38,8 +43,10 @@ import org.mortbay.management.MBeanContainer;
  */
 public class Startup {
 
-    public Startup() {
+    public Startup() throws FileNotFoundException, IOException {
 
+        Properties prop = new Properties();
+        prop.load(new FileReader("sslsettings.properties"));
 
         try {
             Server server = new Server();
@@ -50,27 +57,23 @@ public class Startup {
 
             List<Connector> conns = new ArrayList<Connector>(2);
 
-            int httpPort = 8080;
-            try {
-                httpPort = Integer.valueOf(System.getProperty("jetty.port"));
-                System.out.println("jetty.port property: " + httpPort);
-            } catch (NumberFormatException e) { }
+            String httpPortString = prop.getProperty("port.http", "8080");
 
-            if (httpPort != 0) {
-                SelectChannelConnector httpConn = new SelectChannelConnector();
-                httpConn.setPort(httpPort);
-                // allow access to the unsecured connector from localhost only!
-                httpConn.setHost("localhost");
-                conns.add(httpConn);
-            }
+            int httpPort = Integer.parseInt(httpPortString);
+
+            SelectChannelConnector httpConn = new SelectChannelConnector();
+            httpConn.setPort(httpPort);
+            // allow access to the unsecured connector from localhost only!
+            httpConn.setHost("localhost");
+            conns.add(httpConn);
 
             server.setConnectors(conns.toArray(new Connector[conns.size()]));
             server.setStopAtShutdown(true);
 
-
             final WebAppDeployer wad = new WebAppDeployer();
+            wad.setExtract(true);
             wad.setContexts(server);
-            wad.setWebAppDir("target/wars");
+            wad.setWebAppDir(prop.getProperty("war.directory", "wars"));
             // wad.setExtract(true);
             wad.start();
             // use empty session path to make sure, all webapps share the session id
@@ -79,11 +82,9 @@ public class Startup {
                 if (handler instanceof WebAppContext) {
                     WebAppContext context = ((WebAppContext) handler);
                     context.getSessionHandler().getSessionManager().setSessionPath("/");
-                    // make sure we find extra dependencies
-                    // context.setParentLoaderPriority(true);
                 }
 
-            addSSLConnector(server);
+            addSSLConnector(server, prop);
             startJMX(server);
             server.start();
 
@@ -96,23 +97,35 @@ public class Startup {
             throw new RuntimeException(e);
         }
 
-
-
-
     }
 
-    private void addSSLConnector(Server server) throws Exception {
-        SslSocketConnector ssl = new SslSocketConnector();
-        ssl.setPort(8443);
-        ssl.setKeystore("server.keystore");
-        ssl.setPassword("testtest");
-        ssl.setKeyPassword("testtest");
+    private void addSSLConnector(Server server, Properties prop) throws Exception {
+        final String keystoreFile = prop.getProperty("keystore.filename", "server.keystore");
+        final String password = prop.getProperty("keystore.password", "testtest");
+        String httpsPort = prop.getProperty("port.https", "8443");
 
-        ssl.setNeedClientAuth(true);
-        ssl.setTruststore("server.keystore");
-        ssl.setTrustPassword("testtest");
+        if (new File(keystoreFile).exists()) {
+            SslSocketConnector ssl = new SslSocketConnector();
+            ssl.setPort(Integer.parseInt(httpsPort));
+            ssl.setKeystore(keystoreFile);
+            ssl.setPassword(password);
+            ssl.setKeyPassword(password);
 
-        server.addConnector(ssl);
+            ssl.setNeedClientAuth(true);
+            ssl.setTruststore(keystoreFile);
+            ssl.setTrustPassword(password);
+
+            server.addConnector(ssl);
+        } else {
+            System.out.println("\n" +
+                    "#######################################################################" +
+                    "\nThere seems to be no keystore available. Please generate one using " +
+                    "for Linux: createCertificates.sh \n" +
+                    "for Windows: createCertificates.bat \n\n" +
+                    "and place it in this directory with name \"server.keystore\". \n\n" +
+                    "WARNING: SSL will not be available!" +
+                    "#######################################################################");
+        }
 
     }
 
@@ -126,10 +139,12 @@ public class Startup {
 
     /**
      * @param args
+     * @throws IOException
+     * @throws FileNotFoundException
      */
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws FileNotFoundException, IOException {
         new Startup();
 
-  }
+    }
 
 }
