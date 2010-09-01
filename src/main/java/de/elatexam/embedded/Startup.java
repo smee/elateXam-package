@@ -118,12 +118,14 @@ public class Startup {
             server.addConnector(ssl);
         } else {
             System.out.println("\n" +
-                    "#######################################################################" +
-                    "\nThere seems to be no keystore available. Please generate one using " +
-                    "for Linux: createCertificates.sh \n" +
-                    "for Windows: createCertificates.bat \n\n" +
-                    "and place it in this directory with name \"server.keystore\". \n\n" +
-                    "WARNING: SSL will not be available! \n" +
+                    "#######################################################################\n" +
+                    "# There seems to be no keystore available. Please generate one using \n" +
+                    "#  for Linux: createCertificates.sh \n" +
+                    "#  for Windows: createCertificates.bat \n\n" +
+                    "# and place it in this directory with name \"server.keystore\". \n" +
+                    "# \n" +
+                    "# WARNING: SSL will not be available! \n" +
+                    "# \n" +
                     "#######################################################################");
         }
 
