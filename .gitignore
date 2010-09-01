@@ -3,3 +3,5 @@ target/
 .classpath
 .project
 
+/server.keystore
+/clientcertificate.p12
