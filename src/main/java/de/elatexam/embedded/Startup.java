@@ -64,7 +64,6 @@ public class Startup {
             SelectChannelConnector httpConn = new SelectChannelConnector();
             httpConn.setPort(httpPort);
             // allow access to the unsecured connector from localhost only!
-            httpConn.setHost("localhost");
             conns.add(httpConn);
 
             server.setConnectors(conns.toArray(new Connector[conns.size()]));
@@ -84,7 +83,10 @@ public class Startup {
                     context.getSessionHandler().getSessionManager().setSessionPath("/");
                 }
 
-            addSSLConnector(server, prop);
+            if (addSSLConnector(server, prop) == true) {
+                // whenn ssl is enabled disallow non-ssl access from all ips but localhost
+                httpConn.setHost("localhost");
+            }
             startJMX(server);
             server.start();
 
@@ -99,7 +101,7 @@ public class Startup {
 
     }
 
-    private void addSSLConnector(Server server, Properties prop) throws Exception {
+    private boolean addSSLConnector(Server server, Properties prop) throws Exception {
         final String keystoreFile = prop.getProperty("keystore.filename", "server.keystore");
         final String password = prop.getProperty("keystore.password", "testtest");
         String httpsPort = prop.getProperty("port.https", "8443");
@@ -116,6 +118,7 @@ public class Startup {
             ssl.setTrustPassword(password);
 
             server.addConnector(ssl);
+            return true;
         } else {
             System.out.println("\n" +
                     "#######################################################################\n" +
@@ -127,6 +130,7 @@ public class Startup {
                     "# WARNING: SSL will not be available! \n" +
                     "# \n" +
                     "#######################################################################");
+            return false;
         }
 
     }

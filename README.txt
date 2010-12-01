@@ -15,8 +15,8 @@ accordingly.
 Running:
 =========
 
-There are two modes: Local test run with an unsecured http connector OR completely secure SSL communication with 
-client certificates.
+There are two modes: Test run with an unsecured http connector OR completely secure SSL communication with 
+client certificates (unsecured access only allowed from localhost).
 
 Start the server using one of the 'runElateXam.(sh|bat)' scripts.
 
