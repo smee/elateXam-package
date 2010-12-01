@@ -30,7 +30,7 @@ set /P location=Please enter your location/city: [ %location% ]:
 if ""=="%location%" set location=Unknwown
 
 set password=password
-set /P password=Please enter the password for all keys: 
+set /P password=Please enter the password for all keys (length>=6): 
 if ""=="%password%" set password=password
 
 echo.

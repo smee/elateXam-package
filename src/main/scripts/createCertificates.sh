@@ -16,7 +16,7 @@ if [ -r "$JAVA_HOME"/bin/keytool ]; then
 	echo -n "Please enter your location/city: [" $location "]: "
 	read location
 	password="password"
-	echo -n "Please enter the password for all keys: "
+	echo -n "Please enter the password for all keys (length>=6):"
 	read -s password
 	echo ""
 	
@@ -32,7 +32,7 @@ if [ -r "$JAVA_HOME"/bin/keytool ]; then
 	echo "Generating new server certificate key..."
 	keytool -genkeypair -alias ${serveralias} -keyalg RSA -validity 365 -keystore server.keystore -dname cn="${commonname}",o="${ownername}",l="${location}" -keypass ${password} -storepass ${password}
 	
-	rem wait for app. 1 second to prevent generation of two certificates with the same serial number
+	# wait for app. 1 second to prevent generation of two certificates with the same serial number
 	sleep 1
 	
 	echo "Generating new client certificate key..."
