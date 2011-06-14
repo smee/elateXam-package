@@ -40,7 +40,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <configuration>
-          <mainClass>de.elatexam.editor.Startup</mainClass>
+          <mainClass>de.elatexam.embedded.Startup</mainClass>
           <includePluginDependencies>true</includePluginDependencies>
         </configuration>
       </plugin>
